@@ -1,2 +1,5 @@
-package lambdas;public interface I {
+package lambdas;
+
+public interface I {
+  void m();
 }
