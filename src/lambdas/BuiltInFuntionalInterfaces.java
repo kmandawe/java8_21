@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.crypto.spec.PSource;
 
 public class BuiltInFuntionalInterfaces {
   public static void main(String[] args) {
@@ -17,6 +18,7 @@ public class BuiltInFuntionalInterfaces {
     fiApi.predicate();
     fiApi.supplier();
     fiApi.consumer();
+    fiApi.function();
   }
 
   public void predicate() {
@@ -58,5 +60,16 @@ public class BuiltInFuntionalInterfaces {
         (key, value) -> System.out.println(key + " is the capital of : " + value);
 
     mapCapitalCities.forEach(mapPrint);
+  }
+
+  public void function() {
+    Function<String, Integer> fn2 = s -> s.length();
+    System.out.println("Function: " + fn2.apply("Moscow"));
+
+    BiFunction<String, String, Integer> biFn = (s1, s2) -> s1.length() + s2.length();
+    System.out.println("BiFunction: " + biFn.apply("William", "Shakespeare"));
+
+    BiFunction<String, String, String> biFn2 = (s1, s2) -> s1.concat(s2);
+    System.out.println("BiFunction: " + biFn2.apply("William", "Shakespeare"));
   }
 }
