@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 public class BuiltInFuntionalInterfaces {
   public static void main(String[] args) {
@@ -19,6 +21,7 @@ public class BuiltInFuntionalInterfaces {
     fiApi.supplier();
     fiApi.consumer();
     fiApi.function();
+    fiApi.unaryBinaryOperator();
   }
 
   public void predicate() {
@@ -71,5 +74,13 @@ public class BuiltInFuntionalInterfaces {
 
     BiFunction<String, String, String> biFn2 = (s1, s2) -> s1.concat(s2);
     System.out.println("BiFunction: " + biFn2.apply("William", "Shakespeare"));
+  }
+
+  public void unaryBinaryOperator() {
+    UnaryOperator<String> unaryOp = name -> "My name is " + name;
+    System.out.println("UnaryOperator: " + unaryOp.apply("Sean"));
+
+    BinaryOperator<String> binaryOp = (s1, s2) -> s1.concat(s2);
+    System.out.println("BinaryOperator: " + binaryOp.apply("William", "Shakespeare"));
   }
 }
