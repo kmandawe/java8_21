@@ -1,8 +1,10 @@
 package lambdas;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -14,6 +16,7 @@ public class MethodReferences {
     names.forEach(System.out::println);
     boundMethodReferences();
     unboundMethodReferences();
+    staticMethodReferences();
   }
 
   public static void boundMethodReferences() {
@@ -44,5 +47,18 @@ public class MethodReferences {
     System.out.println(concatL.apply("Sean", "Kennedy"));
 
     System.out.println(concatMR.apply("Sean", "Kennedy"));
+  }
+
+  public static void staticMethodReferences() {
+    Consumer<List<Integer>> sortL = list -> Collections.sort(list);
+    Consumer<List<Integer>> sortMR = Collections::sort;
+
+    List<Integer> listOfNumbers = Arrays.asList(2, 1, 5, 4, 9);
+    sortL.accept(listOfNumbers);
+    System.out.println(listOfNumbers);
+
+    listOfNumbers = Arrays.asList(8, 12, 4, 3, 7);
+    sortMR.accept(listOfNumbers);
+    System.out.println(listOfNumbers);
   }
 }
