@@ -1,24 +1,34 @@
 package streams;
 
 class Person {
-  private String name;
+  private String firstName, lastName;
   private int age;
 
-  public Person(String name, int age) {
-    this.name = name;
+  public Person(String firstName, int age) {
+    this.firstName = firstName;
     this.age = age;
   }
 
-  public String getName() {
-    return name;
+  Person(String firstName, String lastName, int age) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.age = age;
+  }
+
+  public String getFirstName() {
+    return firstName;
   }
 
   public int getAge() {
     return age;
   }
 
+  public String getLastName() {
+    return lastName;
+  }
+
   @Override
   public String toString() {
-    return "Person{" + "name='" + name + '\'' + ", age=" + age + '}';
+    return "Person{" + "firstName=" + firstName + ", lastName=" + lastName + ", age=" + age + '}';
   }
 }
