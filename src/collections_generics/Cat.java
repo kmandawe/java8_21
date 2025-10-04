@@ -1,6 +1,8 @@
 package collections_generics;
 
-public class Cat {
+import java.util.Objects;
+
+public class Cat implements Comparable<Cat>{
   private String name;
   private int age;
 
@@ -25,4 +27,16 @@ public class Cat {
         '}';
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass())
+      return false;
+    Cat cat = (Cat) o;
+    return Objects.equals(name, cat.name);
+  }
+
+  @Override
+  public int compareTo(Cat o) {
+    return name.compareTo(o.name);
+  }
 }
