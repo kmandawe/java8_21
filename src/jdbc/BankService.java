@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BankService {
 
@@ -22,11 +24,33 @@ public class BankService {
   }
 
   public static void main(String[] args) {
-    bank.retrieveOne();
+//    bank.retrieveOne();
+//    bank.retrieveAll();
+//    bank.deleteOne();
+    bank.deleteAll();
   }
 
   public void retrieveOne() {
     System.out.println(bank.getAccountDetails("123456", "12345678"));
+  }
+
+  public void retrieveAll() {
+    for (BankAccount bankAccount: bank.getAllAccounts()) {
+      System.out.println(bankAccount);
+    }
+  }
+
+  public void deleteOne() {
+    int nRows = bank.deleteBankAccount("123456", "12345678");
+    if (nRows == 1) {
+      System.out.println("Delete OK: " + nRows);
+    } else {
+      System.out.println("Delete error: " + nRows);
+    }
+  }
+
+  public void deleteAll() {
+    bank.deleteAllAccounts();
   }
 
   public BankAccount getAccountDetails(String branchCode, String accountNumber) {
@@ -57,4 +81,64 @@ public class BankService {
     }
     return bankAccount;
   }
+
+  public List<BankAccount> getAllAccounts() {
+    String selectSql =
+        "SELECT * FROM demo.bank_table";
+    List<BankAccount> bankAccounts = new ArrayList<>();
+
+    try (PreparedStatement ps = connection.prepareStatement(selectSql)) {
+      boolean isResultSet = ps.execute();
+
+      if (isResultSet) {
+        ResultSet rs = ps.getResultSet();
+        while (rs.next()) {
+          bankAccounts.add(
+              new BankAccount(
+                  rs.getString(1),
+                  rs.getString("account_number"),
+                  rs.getString("cust_name"),
+                  rs.getString("cust_address"),
+                  rs.getDouble("balance")));
+        }
+      } else {
+        System.out.println("Did an update!");
+      }
+    } catch (SQLException sqle) {
+      System.err.println("SQLException in getAllAccounts()");
+      sqle.printStackTrace();
+    }
+    return bankAccounts;
+  }
+
+  public int deleteBankAccount(String branchCode, String accountNumber) {
+    int nRows = -1;
+    String deleteSql =
+        "DELETE FROM demo.bank_table WHERE (branch_code = ? AND account_number = ?)";
+
+    try (PreparedStatement ps = connection.prepareStatement(deleteSql)) {
+      ps.setString(1, branchCode);
+      ps.setString(2, accountNumber);
+
+      nRows = ps.executeUpdate();
+
+    } catch (SQLException sqle) {
+      System.err.println("SQLException in deleteBankAccount()");
+      sqle.printStackTrace();
+    }
+    return nRows;
+  }
+
+  public void deleteAllAccounts() {
+    String deleteSql =
+        "DELETE FROM demo.bank_table";
+
+    try (PreparedStatement ps = connection.prepareStatement(deleteSql)) {
+      ps.executeUpdate();
+    } catch (SQLException sqle) {
+      System.err.println("SQLException in deleteAllAccounts()");
+      sqle.printStackTrace();
+    }
+  }
+
 }
