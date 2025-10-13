@@ -28,7 +28,8 @@ public class BankService {
 //    bank.retrieveAll();
 //    bank.deleteOne();
 //    bank.deleteAll();
-    bank.add();
+//    bank.add();
+    bank.update();
   }
 
   public void retrieveOne() {
@@ -62,6 +63,21 @@ public class BankService {
       System.out.println("Add OK: " + nRows);
     } else {
       System.out.println("Add error: " + nRows);
+    }
+  }
+
+  public void update() {
+    BankAccount bankAccount = bank.getAccountDetails("123456", "12345678");
+    System.out.println("BEFORE update: " + bankAccount);
+    bankAccount.setCustName("J. Bloggs");
+    bankAccount.setCustAddress("London");
+    int nRows = bank.updateBankAccount(bankAccount);
+
+    if (nRows == 1) {
+      System.out.println("Update OK: " + nRows);
+      System.out.println("AFTER update: " + bank.getAccountDetails("123456", "12345678"));
+    } else {
+      System.out.println("Update error: " + nRows);
     }
   }
 
@@ -168,6 +184,26 @@ public class BankService {
       nRows = ps.executeUpdate();
     } catch (SQLException sqle) {
       System.err.println("SQLException in addBankAccount()");
+      sqle.printStackTrace();
+    }
+    return nRows;
+  }
+
+  public int updateBankAccount(BankAccount bankAccount) {
+    int nRows = -1;
+    String updateSql = "UPDATE demo.bank_table SET cust_name = ?, cust_address = ?, balance = ? "
+        + "WHERE (branch_code = ? AND account_number = ?)";
+
+    try (PreparedStatement ps = connection.prepareStatement(updateSql)) {
+      ps.setString(1, bankAccount.getCustName());
+      ps.setString(2, bankAccount.getCustAddress());
+      ps.setDouble(3, bankAccount.getBalance());
+      ps.setString(4, bankAccount.getBranchCode());
+      ps.setString(5, bankAccount.getAccountNumber());
+
+      nRows = ps.executeUpdate();
+    } catch (SQLException sqle) {
+      System.err.println("SQLException in updateBankAccount()");
       sqle.printStackTrace();
     }
     return nRows;
