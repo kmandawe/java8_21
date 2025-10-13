@@ -1,4 +1,4 @@
-package localisaton;
+package localisation;
 
 import java.text.NumberFormat;
 import java.util.Locale;
