@@ -27,7 +27,8 @@ public class BankService {
 //    bank.retrieveOne();
 //    bank.retrieveAll();
 //    bank.deleteOne();
-    bank.deleteAll();
+//    bank.deleteAll();
+    bank.add();
   }
 
   public void retrieveOne() {
@@ -51,6 +52,17 @@ public class BankService {
 
   public void deleteAll() {
     bank.deleteAllAccounts();
+  }
+
+  public void add() {
+    int nRows = bank.addBankAccount(
+        new BankAccount("999999", "88888888", "SK", "Dublin", 100)
+    );
+    if (nRows == 1) {
+      System.out.println("Add OK: " + nRows);
+    } else {
+      System.out.println("Add error: " + nRows);
+    }
   }
 
   public BankAccount getAccountDetails(String branchCode, String accountNumber) {
@@ -141,4 +153,23 @@ public class BankService {
     }
   }
 
+  public int addBankAccount(BankAccount bankAccount) {
+    int nRows = -1;
+    String insertSql =
+        "INSERT INTO demo.bank_table (branch_code, account_number, cust_name, cust_address, balance) "
+            + "VALUES (?, ?, ?, ?, ?)";
+    try (PreparedStatement ps = connection.prepareStatement(insertSql)) {
+      ps.setString(1, bankAccount.getBranchCode());
+      ps.setString(2, bankAccount.getAccountNumber());
+      ps.setString(3, bankAccount.getCustName());
+      ps.setString(4, bankAccount.getCustAddress());
+      ps.setDouble(5, bankAccount.getBalance());
+
+      nRows = ps.executeUpdate();
+    } catch (SQLException sqle) {
+      System.err.println("SQLException in addBankAccount()");
+      sqle.printStackTrace();
+    }
+    return nRows;
+  }
 }
