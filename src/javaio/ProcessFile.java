@@ -1,0 +1,28 @@
+package javaio;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+import streams.Cat;
+
+public class ProcessFile {
+  public static void main(String[] args){
+    List<Cat> cats = loadCats("nio2/Cats.txt");
+    cats.forEach(System.out::println);
+  }
+  private static List<Cat> loadCats(String fileName) {
+    List<Cat> cats = new ArrayList<>();
+    try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+      stream.forEach( line -> {
+        String[] catsArray = line.split("/");
+        cats.add(new Cat(catsArray[0], catsArray[1]));
+      });
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
+    return cats;
+  }
+}
