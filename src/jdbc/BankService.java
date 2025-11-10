@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,8 @@ public class BankService {
 //    bank.deleteOne();
 //    bank.deleteAll();
 //    bank.add();
-    bank.update();
+//    bank.update();
+    bank.retrieveUsingStatement("123456");
   }
 
   public void retrieveOne() {
@@ -207,5 +209,51 @@ public class BankService {
       sqle.printStackTrace();
     }
     return nRows;
+  }
+
+  public void retrieveUsingStatement(String branchCode) {
+    String selectSql =
+        "SELECT * FROM demo.bank_table WHERE branch_code = " + branchCode + "";
+
+    try (Statement stmt = connection.createStatement()) {
+      ResultSet rs = stmt.executeQuery(selectSql);
+
+      while (rs.next()) {
+        System.out.println(
+            new BankAccount(
+                rs.getString(1),
+                rs.getString("account_number"),
+                rs.getString("cust_name"),
+                rs.getString("cust_address"),
+                rs.getDouble("balance")));
+      }
+    } catch (SQLException sqle) {
+      System.err.println("SQLException in retrieveUsingStatement()");
+      sqle.printStackTrace();
+    }
+  }
+
+  public void retrieveUsingPreparedStatement(String branchCode) {
+    String selectSql =
+        "SELECT * FROM demo.bank_table WHERE branch_code = ?";
+
+    try (PreparedStatement ps = connection.prepareStatement(selectSql)) {
+      ps.setString(1, branchCode);
+
+      ResultSet rs = ps.executeQuery();
+
+      while (rs.next()) {
+        System.out.println(
+            new BankAccount(
+                rs.getString(1),
+                rs.getString("account_number"),
+                rs.getString("cust_name"),
+                rs.getString("cust_address"),
+                rs.getDouble("balance")));
+      }
+    } catch (SQLException sqle) {
+      System.err.println("SQLException in retrieveUsingPreparedStatement()");
+      sqle.printStackTrace();
+    }
   }
 }
